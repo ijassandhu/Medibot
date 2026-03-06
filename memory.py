@@ -3,11 +3,11 @@ from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from dotenv import load_dotenv
-import os
+import streamlit as st
 
 load_dotenv()
 
-token = os.getenv('HUGGINGFACEHUB_API_TOKEN')
+token = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 embedding_model = HuggingFaceEndpointEmbeddings(
     huggingfacehub_api_token = token,
     model="sentence-transformers/all-MiniLM-L6-v2"
