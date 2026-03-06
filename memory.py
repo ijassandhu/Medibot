@@ -26,26 +26,25 @@ def load_pdf_files(data):
 
 
 # Only create FAISS if it does not exist
-if not os.path.exists(DB_FAISS_PATH):
+if os.path.exists(DB_FAISS_PATH):
+
+    db = FAISS.load_local(
+        DB_FAISS_PATH,
+        embedding,
+        allow_dangerous_deserialization=True
+    )
+
+else:
 
     docs = load_pdf_files("files")
 
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
-        chunk_overlap=70,
-        separators=["\n\n", "\n", " ", ""]
+        chunk_overlap=70
     )
 
     chunks = splitter.split_documents(docs)
 
-    db = FAISS.from_documents(
-        documents=chunks,
-        embedding=embedding
-    )
+    db = FAISS.from_documents(chunks, embedding)
 
     db.save_local(DB_FAISS_PATH)
-
-    print("FAISS index created successfully")
-
-else:
-    print("FAISS index already exists")
