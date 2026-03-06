@@ -32,7 +32,8 @@ if not os.path.exists(DB_FAISS_PATH):
 
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
-        chunk_overlap=70
+        chunk_overlap=70,
+        separators=["\n\n", "\n", " ", ""]
     )
 
     chunks = splitter.split_documents(docs)
