@@ -13,30 +13,38 @@ embedding = HuggingFaceEndpointEmbeddings(
     model="sentence-transformers/all-MiniLM-L6-v2"
 )
 
-def load_pdf_files(data):
-    loader = DirectoryLoader(data,
-                             glob='*.pdf',
-                             loader_cls=PyPDFLoader
-                            )
-    documents =  loader.lazy_load()
-    return documents
-
-docs = load_pdf_files("files")
-splitter = RecursiveCharacterTextSplitter(
-        chunk_size = 500,
-        chunk_overlap = 70,
-        separators= ''
-)
-chunks = splitter.split_documents(docs)
-# text = [chunk.page_content for chunk in chunks]
-
 DB_FAISS_PATH = 'vectorstore/db/faiss'
 
-db = FAISS.from_documents(
-   documents = chunks,
-   embedding = embedding
-)
-db.save_local(DB_FAISS_PATH)
+def load_pdf_files(data):
+    loader = DirectoryLoader(
+        data,
+        glob="*.pdf",
+        loader_cls=PyPDFLoader
+    )
+    documents = loader.load()
+    return documents
 
 
-# print(len(text))
+# Only create FAISS if it does not exist
+if not os.path.exists(DB_FAISS_PATH):
+
+    docs = load_pdf_files("files")
+
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,
+        chunk_overlap=70
+    )
+
+    chunks = splitter.split_documents(docs)
+
+    db = FAISS.from_documents(
+        documents=chunks,
+        embedding=embedding
+    )
+
+    db.save_local(DB_FAISS_PATH)
+
+    print("FAISS index created successfully")
+
+else:
+    print("FAISS index already exists")
