@@ -12,7 +12,7 @@ logo = load_image("images/logo.png")
 # -----------------------------
 st.set_page_config(
     page_title="Medibot",
-    # page_icon={logo},
+    page_icon="🩺",
     layout="wide"
 )
 

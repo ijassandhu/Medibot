@@ -8,7 +8,7 @@ import os
 load_dotenv()
 
 token = os.getenv('HUGGINGFACEHUB_API_TOKEN')
-embedding = HuggingFaceEndpointEmbeddings(
+embedding_model = HuggingFaceEndpointEmbeddings(
     huggingfacehub_api_token = token,
     model="sentence-transformers/all-MiniLM-L6-v2"
 )
@@ -24,17 +24,16 @@ def load_pdf_files(data):
     documents = loader.load()
     return documents
 
-
-# Only create FAISS if it does not exist
-if os.path.exists(DB_FAISS_PATH):
-
+try:
     db = FAISS.load_local(
         DB_FAISS_PATH,
-        embedding,
+        embedding_model,
         allow_dangerous_deserialization=True
     )
+    print("FAISS loaded successfully")
 
-else:
+except Exception as e:
+    print("FAISS load failed, rebuilding index:", e)
 
     docs = load_pdf_files("files")
 
@@ -45,6 +44,11 @@ else:
 
     chunks = splitter.split_documents(docs)
 
-    db = FAISS.from_documents(chunks, embedding)
+    db = FAISS.from_documents(
+        documents=chunks,
+        embedding=embedding_model
+    )
 
     db.save_local(DB_FAISS_PATH)
+
+    print("FAISS rebuilt successfully")
