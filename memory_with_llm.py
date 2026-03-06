@@ -110,14 +110,11 @@ prompt = PromptTemplate(
 # 6️⃣ LOAD LLM
 
 llm = HuggingFaceEndpoint(
-    repo_id= "meta-llama/Llama-3.2-3B-Instruct",
-    task= "text-generation",
+    repo_id="HuggingFaceH4/zephyr-7b-beta",
     huggingfacehub_api_token=token,
-    temperature=0.2,
-    max_new_tokens=512,
+    temperature=0.5,
+    max_new_tokens=512
 )
-model = ChatHuggingFace(llm = llm)
-
 parser = StrOutputParser()
 # 7️⃣ FORMAT DOCUMENTS
 
@@ -129,7 +126,7 @@ def format_docs(docs):
     formatted_docs =  "\n\n".join(doc.page_content for doc in docs)
     return formatted_docs
 
-rewrite_chain = improved_query | model | parser
+rewrite_chain = improved_query | llm | parser
 
 def improve_query(user_query):
     return rewrite_chain.invoke({"question": user_query})
