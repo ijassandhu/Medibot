@@ -6,6 +6,7 @@ from langchain_core.runnables import RunnableLambda
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader,DirectoryLoader
+import streamlit as st
 
 from dotenv import load_dotenv
 
@@ -14,7 +15,7 @@ load_dotenv()
 # 1️⃣ CONFIGURATION
 
 DB_FAISS_PATH = "vectorstore/db/faiss"
-token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+token = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
 # 2️⃣ LOAD EMBEDDING MODEL
 
