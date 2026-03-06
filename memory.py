@@ -24,7 +24,7 @@ def load_pdf_files(data):
 docs = load_pdf_files("files")
 splitter = RecursiveCharacterTextSplitter(
         chunk_size = 500,
-        chunk_overlap = 50,
+        chunk_overlap = 70,
         separators= ''
 )
 chunks = splitter.split_documents(docs)
