@@ -1,9 +1,9 @@
 streamlit
 python-dotenv
-langchain
-langchain-community
-langchain-core
-langchain-huggingface
+langchain==0.2.16
+langchain-community==0.2.16
+langchain-core==0.2.38
+langchain-huggingface==0.0.3
 langchain-text-splitters
 faiss-cpu
 huggingface-hub
