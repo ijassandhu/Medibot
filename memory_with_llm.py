@@ -4,6 +4,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda
 from langchain_community.vectorstores import FAISS
+from langchain_community.document_loaders import PyPDFLoader,DirectoryLoader
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,6 +22,14 @@ embedding_model = HuggingFaceEmbeddings(
 )
 
 # 3️⃣ LOAD FAISS DATABASE
+def load_pdf_files(data):
+    loader = DirectoryLoader(
+        data,
+        glob="*.pdf",
+        loader_cls=PyPDFLoader
+    )
+    documents = loader.load()
+    return documents
 
 try:
     db = FAISS.load_local(
@@ -28,8 +38,25 @@ try:
         allow_dangerous_deserialization=True
     )
 except Exception as e:
-    print(f"Error loading FAISS DB: {e}")
-    exit()
+    print("FAISS load failed, rebuilding index:", e)
+
+    docs = load_pdf_files("files")
+
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,
+        chunk_overlap=70
+    )
+
+    chunks = splitter.split_documents(docs)
+
+    db = FAISS.from_documents(
+        documents=chunks,
+        embedding=embedding_model
+    )
+
+    db.save_local(DB_FAISS_PATH)
+
+    print("FAISS rebuilt successfully")
 
 # 4️⃣ CREATE RETRIEVER
 
