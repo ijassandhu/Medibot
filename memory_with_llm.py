@@ -2,7 +2,7 @@ import os
 from langchain_huggingface import HuggingFaceEmbeddings,ChatHuggingFace,HuggingFaceEndpoint
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough,RunnableLambda
+from langchain_core.runnables import RunnableLambda
 from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv
 
@@ -11,7 +11,7 @@ load_dotenv()
 # 1️⃣ CONFIGURATION
 
 DB_FAISS_PATH = "vectorstore/db/faiss"
-token = os.getenv("HUGGINGFACEHUB_ACCESS_TOKEN")
+token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
 
 # 2️⃣ LOAD EMBEDDING MODEL
 

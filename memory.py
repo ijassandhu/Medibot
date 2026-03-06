@@ -7,7 +7,7 @@ import os
 
 load_dotenv()
 
-token = os.getenv('HUGGINGFACEHUB_ACCESS_TOKEN')
+token = os.getenv('HUGGINGFACEHUB_API_TOKEN')
 embedding = HuggingFaceEndpointEmbeddings(
     huggingfacehub_api_token = token,
     model="sentence-transformers/all-MiniLM-L6-v2"
